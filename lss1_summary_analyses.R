@@ -4,6 +4,7 @@ pkgs <- c("multcomp", "emmeans", "tidyverse", "effects", "lme4", "lmerTest", "ps
 lapply(pkgs[!(pkgs %in% installed.packages())], install.packages)
 lapply(pkgs, library, character.only = TRUE)
 
+#steve
 #Set graphics themes and colors
 cbp1 <- c("#999999", "#E69F00", "#56B4E9", "#009E73",
           "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
