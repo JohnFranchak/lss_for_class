@@ -1,11 +1,9 @@
-# Chuan comment
 # SET UP --------------
 #Install and load packages
 pkgs <- c("multcomp", "emmeans", "tidyverse", "effects", "lme4", "lmerTest", "psych","ggforce")
 lapply(pkgs[!(pkgs %in% installed.packages())], install.packages)
 lapply(pkgs, library, character.only = TRUE)
 
-#steve
 #Set graphics themes and colors
 cbp1 <- c("#999999", "#E69F00", "#56B4E9", "#009E73",
           "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
@@ -17,16 +15,12 @@ theme_update(text = element_text(size = 18),
       axis.ticks.length = unit(.25, "cm"), axis.ticks = element_line(size = 1, lineend = "round"),
       legend.key = element_rect(fill = "white"))
 
-#FORK COMMENT
-#ANOTHER CHANGE
-
 # CREATE DATA SET ---------------------------------------------------------------
 ds <- read_csv("summary_stats_LSS1.csv", na = "NaN")
 ds <- mutate(ds, id = factor(id))
 ds[ds["id"] == 13, "search_eyex_speed"] <- NA
 
 # ANALYSES --------------
-# Insert Brianna's comment here
 
 # Convert from wide to long format =======
 dv_vars <- c("walk_eyex_std","search_eyex_std","walk_eyey_std","search_eyey_std")
