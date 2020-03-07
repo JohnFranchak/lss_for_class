@@ -46,8 +46,15 @@ dsl %>%
   summarise(stdev = mean(std, na.rm = T), n = n(), se = sd(std, na.rm = T)/sqrt(n))
   
 # Let's split some data =======
+dsl %>% lmer(std ~ task*dim + (1|id), data = .) %>% anova
+
 dsl %>% 
   split(.$dim) %>% 
+  map(~ lmer(std ~ task + (1|id),data = .)) %>% 
+  map(anova)
+
+dsl %>% 
+  group_split(dim) %>% 
   map(~ lmer(std ~ task + (1|id),data = .)) %>% 
   map(anova)
 
@@ -75,7 +82,7 @@ ggplot(data = filter(dsl, dim == "x"), aes(y = std, x = task, color = task)) +
 #Plot both
 ggplot() + 
   geom_sina(data = filter(dsl, dim == "x"), aes(y = std, x = task, color = task), maxwidth = .5, position = position_dodge(.6), alpha = .5, size = 3) +
-  geom_errorbar(data = ds_sum, aes(x = task, group = task,ymin = ymin, ymax = ymax), size =1, width = .3, position = position_dodge(.6)) 
+  geom_errorbar(data = filter(ds_sum,dim == "x"), aes(x = task, group = task,ymin = ymin, ymax = ymax), size =1, width = .3, position = position_dodge(.6)) 
 
 #Make it pretty
 ggplot() + 
