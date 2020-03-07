@@ -1,6 +1,7 @@
 ---
 title: "Making effective graphs"
 output: 
+  #html_document
   beamer_presentation:
     theme: "Madrid"
     colortheme: "seagull"
@@ -68,6 +69,15 @@ ggplot() +
   labs(x = "", y = "Position SD (º)") 
 ```
 
+# Making effective visualizations
+## What makes a good graph?
+  * Highlights the most important information
+  * Reduces visual clutter (remove unnecessary backgrounds, lines, etc)
+  * Clear, legible elements (text is big enough, colors/shapes are distinguishable)
+  * Graphical elements map onto conceptual elements (graph mean +/- SE if showing inferential statistics, don't show min/max if it's not relevant)
+  * Graph does not mislead the audience (sensible axes, doesn't hide individual data/variability)
+  * Scaffolds for interpreting figure (annotations, reference lines, scales)
+  
 # How about this one?
 
 ```{r, out.height='70%', fig.asp = 1, fig.align='center'}
@@ -80,7 +90,6 @@ ggplot() +
 ```
 
 # How about this one?
-
 
 ```{r, out.height='70%', fig.asp = 1,fig.align='center'}
 ggplot() + 
@@ -101,16 +110,28 @@ ggplot(data = dsl, aes(x = dim, y = std, color = task)) +
   labs(x = "Dimension", y = "Position SD (º)") 
 ```
 
-
 # How about this one?
 
 ```{r, out.height='70%', fig.asp = 1,fig.align='center'}
-ggplot() + 
-  #geom_sina(data = dsl, aes(y = std, x = dim, color = task), maxwidth = .5, position = position_dodge(.6), alpha = .5, size = 3) +
-  geom_errorbar(data = ds_sum, aes(x = dim, group = task,ymin = ymin, ymax = ymax, color = task), size =1, width = .3, position = position_dodge(.1)) +
-  scale_color_manual(values = cbp1[c(7,6)], name = "Task") + 
-  scale_y_continuous(breaks = seq(0,15,5), limits = c(0,15)) + 
-  labs(x = "Dimension", y = "Position SD (º)") + theme_grey()
+library(quantmod)
+data("economics", package = "ggplot2")
+
+# Compute % Returns
+economics$returns_perc <- c(0, diff(economics$psavert)/economics$psavert[-length(economics$psavert)])
+
+# Create break points and labels for axis ticks
+brks <- economics$date[seq(1, length(economics$date), 12)]
+lbls <- lubridate::year(economics$date[seq(1, length(economics$date), 12)])
+
+# Plot
+ggplot(economics[1:100, ], aes(date, returns_perc)) + 
+  geom_area() + 
+  scale_x_date(breaks=brks, labels=lbls) + 
+  theme(axis.text.x = element_text(angle=90)) + 
+  labs(title="Area Chart", 
+       subtitle = "Perc Returns for Personal Savings", 
+       y="% Returns for Personal savings", 
+       caption="Source: economics")
 ```
 
 # How about this one?
@@ -128,18 +149,15 @@ include_graphics("busy_but_clear.png")
 include_graphics("maybe_too_much.png") 
 ```
 
-# Making effective visualizations
-## What makes a good graph?
-  * Highlights the most important information
-  * Reduces visual clutter (remove unnecessary backgrounds, lines, etc)
-  * Clear, legible elements (text is big enough, colors/shapes are distinguishable)
-  * Graphical elements map onto conceptual elements (graph mean +/- SE if showing inferential statistics, don't show min/max if it's not relevant)
-  * Graph does not mislead the audience (sensible axes, doesn't hide individual data/variability)
-  * Scaffolds for interpreting figure (annotations, reference lines, scales)
-
 # Making effective sets of visualizations 
 - What makes a good series of graphs in a paper?
 
+# Making effective sets of visualizations 
+## What makes a good series of graphs in a paper?
+  - Consistent scaling across graphs
+  - Same mappings for shape/color/line styles across graphs
+  - Consistent graphical styles (font sizes, line weights, capitalization, etc)
+  
 # How about this one?
 ```{r  out.height = "70%", fig.align="center"}
 include_graphics("good_scales.png") 
@@ -151,16 +169,9 @@ include_graphics("colors.png")
 ```
 
 # How about this one?
-![](inconsistent_style.png) 
-
-# Making effective sets of visualizations 
-## What makes a good series of graphs in a paper?
-  - Consistency scaling across graphs
-  - Same mappings for shape/color/line styles across graphs
-  - Consistent graphical styles (font sizes, line weights, capitalization, etc)
-  
-Following examples from:
-* http://r-statistics.co/Top50-Ggplot2-Visualizations-MasterList-R-Code.html
+```{r  out.height = "70%", fig.align="center"}
+include_graphics("inconsistent_style.png") 
+```
   
 # What graphical elements are appropriate for different types of data? 
 ```{r  out.height = "80%", fig.align="center"}
@@ -175,7 +186,6 @@ include_graphics("choosing_graphs_edited.jpg")
 # What graphical elements are appropriate for different types of data? 
 * Relationship
   * Scatterplot = continous variables, at least 4-5 levels each
-  * May need to jitter if variables are discrete 
   * Be careful of misleading axes scales (like this example)
 ```{r out.height = "50%", fig.align="center"}
 # load package and data
@@ -191,6 +201,8 @@ g + geom_jitter(width = .5, size=1) +
        x="cty", 
        title="Jittered Points")
 ```
+Following examples from:
+* http://r-statistics.co/Top50-Ggplot2-Visualizations-MasterList-R-Code.html
 
 # What graphical elements are appropriate for different types of data? 
 * Relationship 
@@ -242,3 +254,13 @@ include_graphics("point_range.png")
     * Does not always highlight the comparison
     * Raises questions about semi-outliers, influential points
     * Not always possible if there's a lot of data
+
+# Plotting individuals
+```{r  out.height = "80%", fig.align="center"}
+include_graphics("individual_data.png") 
+```
+
+# Plotting groups 
+```{r  out.height = "80%", fig.align="center"}
+include_graphics("grouped_data.png") 
+```
