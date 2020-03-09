@@ -101,3 +101,4 @@ ggplot() +
   scale_y_continuous(breaks = seq(0,20,5), limits = c(0,20)) + 
   labs(x = "", y = "Position SD (º)") 
 
+
